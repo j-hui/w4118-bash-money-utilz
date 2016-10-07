@@ -1,4 +1,4 @@
-alias emu="emulator @w4118avd -kernel ${phwd}/arch/arm64/boot/Image -show-kernel"
+alias emu="emulator @w4118avd -kernel ${phwd}/kernel/arch/arm64/boot/Image -show-kernel"
 
 function cdos()
 {
@@ -7,7 +7,7 @@ function cdos()
 
 function armmake()
 {(
-	cd ${phwd} &&
+	cd ${phwd}/kernel &&
 	make -j2 ARCH=arm64 CROSS_COMPILE=aarch64-linux-android- "$@"
 )}
 
