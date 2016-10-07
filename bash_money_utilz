@@ -41,7 +41,7 @@ function style::tab()
 	style::tab8 $1
 }
 
-if ! [[ -d ${phwd} ]]
+if ! ( cd ${phwd} )
 then
-	echo "Error: you haven't defined env 'phwd' yet. Some eggy shortcuts will fail."
+	echo "Warning: some eggy shortcuts will fail."
 fi
