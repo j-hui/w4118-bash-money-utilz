@@ -3,8 +3,7 @@ ba$h m0n€¥ utilz
 
 ** THIS PUBLIC REPO DOES NOT AND SHALL NOT CONTAIN ANY COURSE WORK **
 
-It's only purpose is to synchronise handy productivity hacks
-for w4118's group projects.
+Its only purpose is to synchronise productivity hacks for w4118's projects.
 I make it public in case any other students wanted to help get more out of
 kernel hacking with some productivity hacks.
 
