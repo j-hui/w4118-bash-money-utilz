@@ -14,8 +14,8 @@ But until that I'll try my very best to make sure nothing here constitutes to
 _actual coursework_.
 
 
-Intructions
------------
+Instructions
+------------
 
 All aliases and functions are defined in a `.bashrc`-like script.
 To use them, simply add the following to your `~/.bashrc` or `~/.bash_profile`:
