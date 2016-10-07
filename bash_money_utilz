@@ -1,4 +1,4 @@
-alias emu="emulator @w4118avd -kernel ${phwd}/kernel/arch/arm64/boot/Image -show-kernel"
+alias emu="emulator @w4118avd -kernel ${phwd}/build-emu/kernel/arch/arm64/boot/Image -show-kernel"
 
 function cdos()
 {
