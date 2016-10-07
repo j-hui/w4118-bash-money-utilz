@@ -1,0 +1,47 @@
+alias emu="emulator @w4118avd -kernel ${phwd}/arch/arm64/boot/Image -show-kernel"
+
+function cdos()
+{
+	cd ${phwd}
+}
+
+function armmake()
+{(
+	cd ${phwd} &&
+	make -j2 ARCH=arm64 CROSS_COMPILE=aarch64-linux-android- "$@"
+)}
+
+function style::check()
+{
+	if [[ ${USER} == "w4118" ]]
+	then
+		~/utils/bin/checkpatch.pl --no-tree -f "$@"
+	else
+		perl <(curl -s https://raw.githubusercontent.com/torvalds/linux/master/scripts/checkpatch.pl) --no-tree -f "$@"
+	fi
+}
+
+function style::strip()
+{
+	sed --in-place 's/[[:space:]]\+$//' $1
+}
+
+function style::tab8()
+{
+	sed 's/        /\t/g' $1
+}
+
+function style::tab4()
+{
+	sed 's/    /\t/g' $1
+}
+
+function style::tab()
+{
+	style::tab8 $1
+}
+
+if ! [[ -d ${phwd} ]]
+then
+	echo "Error: you haven't defined env 'phwd' yet. Some eggy shortcuts will fail."
+fi

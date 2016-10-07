@@ -18,9 +18,15 @@ Instructions
 ------------
 
 All aliases and functions are defined in a `.bashrc`-like script.
+
 To use them, simply add the following to your `~/.bashrc` or `~/.bash_profile`:
 
 ```
+export phwd=/abs/path/to/current/homework/directory
 source <path-to>/w4118-eggyagma/bash_money_utilz
 
 ```
+Some functions use an absolute path to the latest homework.
+That's what `phwd` is for: it points to your present homework directory.
+If you don't like having to modify your `.bashrc` all the time,
+you can point `phwd` to a symlink and just update your symlink for each new hw.
