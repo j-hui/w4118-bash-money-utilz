@@ -45,3 +45,21 @@ if ! ( cd ${phwd} )
 then
 	echo "Warning: some eggy shortcuts will fail."
 fi
+
+#have to run in /kernel
+function makekernel()
+{
+	branch=$(git branch | sed -n -e 's/^\* \(.*\)/\1/p')
+	if [ "$branch" == "emu" ]; 
+	then
+	./make_kernel ranchu_defconfig
+	./make_kernel -j10
+	fi 
+
+	if [ "$branch" == "master" ];
+	 then
+	./make_kernel msm_defconfig
+	./make_kernel -j10
+	fi	
+}
+
