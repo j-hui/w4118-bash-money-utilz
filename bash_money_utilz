@@ -74,6 +74,13 @@ function style::check()
 	fi
 }
 
+function setup::checkout()
+{
+	local hook_path="$(git::root)/.git/hooks"
+	curl https://raw.githubusercontent.com/W4118/common/master/post-checkout > ${hook_path}/post-checkout
+	chmod +x "${hook_path}/post-checkout"
+}
+
 function style::strip()
 {
 	sed --in-place 's/[[:space:]]\+$//' $1
