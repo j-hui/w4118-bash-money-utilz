@@ -3,8 +3,19 @@ alias armmake="make::build"
 alias makekernel="make::build"
 alias make::img="$(git rev-parse --show-toplevel)/tools/make_bootimg"
 
+function git::is_w4118()
+{
+	git remote -v | grep -q "W4118/hmwk"
+	return ${?}
+}
+
 function git::master()
 {(
+	if ! git::is_w4118; then
+		echo "error: not in w4118 git repo"
+		return 1
+	fi
+
 	cd "$(git rev-parse --show-toplevel)/kernel"
 	git checkout master
 	git submodule update
@@ -13,6 +24,11 @@ function git::master()
 
 function git::emu()
 {(
+	if ! git::is_w4118; then
+		echo "error: not in w4118 git repo"
+		return 1
+	fi
+
 	cd "$(git rev-parse --show-toplevel)/kernel"
 	git checkout emu
 	git submodule update
@@ -21,6 +37,11 @@ function git::emu()
 
 function make::build()
 {(
+	if ! git::is_w4118; then
+		echo "error: not in w4118 git repo"
+		return 1
+	fi
+
 	cd "$(git rev-parse --show-toplevel)/kernel"
 
 	branch="$(git rev-parse --abbrev-ref HEAD)"
