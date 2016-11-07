@@ -1,5 +1,6 @@
 alias emu="emulator @w4118avd -kernel $(git rev-parse --show-toplevel)/build-emu/kernel/arch/arm64/boot/Image -show-kernel"
 alias armmake="make::build"
+alias makekernel="make::build"
 alias make::img="$(git rev-parse --show-toplevel)/tools/make_bootimg"
 
 function git::master()
