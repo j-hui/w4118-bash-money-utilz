@@ -1,14 +1,42 @@
-alias emu="emulator @w4118avd -kernel ${phwd}/build-emu/kernel/arch/arm64/boot/Image -show-kernel"
+alias emu="emulator @w4118avd -kernel $(git rev-parse --show-toplevel)/build-emu/kernel/arch/arm64/boot/Image -show-kernel"
+alias armmake="make::build"
+alias make::img="$(git rev-parse --show-toplevel)/tools/make_bootimg"
 
-function cdos()
-{
-	cd ${phwd}
-}
-
-function armmake()
+function git::master()
 {(
-	cd ${phwd}/kernel &&
-	make -j2 ARCH=arm64 CROSS_COMPILE=aarch64-linux-android- "$@"
+	cd "$(git rev-parse --show-toplevel)/kernel"
+	git checkout master
+	git submodule update
+	./make_kernel msm_defconfig
+)}
+
+function git::emu()
+{(
+	cd "$(git rev-parse --show-toplevel)/kernel"
+	git checkout emu
+	git submodule update
+	./make_kernel ranchu_defconfig
+)}
+
+function make::build()
+{(
+	cd "$(git rev-parse --show-toplevel)/kernel"
+
+	branch="$(git rev-parse --abbrev-ref HEAD)"
+	if [[ "${branch}" == "master" ]]
+	then
+		echo "********* MASTER CONFIGURATION *********"
+		./make_kernel msm_defconfig
+	elif [[ "${branch}" == "emu" ]]
+	then
+		echo "********* EMU CONFIGURATION *********"
+		./make_kernel ranchu_defconfig
+	else
+		echo "armmake error: not on master or emu branch"
+		# TODO: add in functionality to prompt for branch to build on
+		return
+	fi
+	./make_kernel -j10 "$@"
 )}
 
 function style::check()
@@ -40,8 +68,3 @@ function style::tab()
 {
 	style::tab8 $1
 }
-
-if ! ( cd ${phwd} )
-then
-	echo "Warning: some eggy shortcuts will fail."
-fi
