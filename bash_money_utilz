@@ -1,7 +1,10 @@
-alias emu="emulator @w4118avd -kernel $(git rev-parse --show-toplevel)/build-emu/kernel/arch/arm64/boot/Image -show-kernel"
+alias git::root="git rev-parse --show-toplevel"
+
+alias emu="emulator @w4118avd -kernel $(git::root)/build-emu/kernel/arch/arm64/boot/Image -show-kernel"
+
 alias armmake="make::build"
 alias makekernel="make::build"
-alias make::img="$(git rev-parse --show-toplevel)/tools/make_bootimg"
+alias make::img="$(git::root)/tools/make_bootimg"
 
 function git::is_w4118()
 {
@@ -16,7 +19,7 @@ function git::master()
 		return 1
 	fi
 
-	cd "$(git rev-parse --show-toplevel)/kernel"
+	cd "$(git::root)/kernel"
 	git checkout master
 	git submodule update
 	./make_kernel msm_defconfig
@@ -29,7 +32,7 @@ function git::emu()
 		return 1
 	fi
 
-	cd "$(git rev-parse --show-toplevel)/kernel"
+	cd "$(git::root)/kernel"
 	git checkout emu
 	git submodule update
 	./make_kernel ranchu_defconfig
@@ -42,7 +45,7 @@ function make::build()
 		return 1
 	fi
 
-	cd "$(git rev-parse --show-toplevel)/kernel"
+	cd "$(git::root)/kernel"
 
 	branch="$(git rev-parse --abbrev-ref HEAD)"
 	if [[ "${branch}" == "master" ]]
