@@ -58,8 +58,18 @@ function make::build()
 		./make_kernel ranchu_defconfig
 	else
 		echo "armmake error: not on master or emu branch"
-		# TODO: add in functionality to prompt for branch to build on
-		return
+		echo -n "please specific the config you would like to compile with [master/emu]: "
+		read branch
+		if [[ ${branch} == "master" ]]; then
+			echo "********* MASTER CONFIGURATION *********"
+			./make_kernel msm_defconfig
+		elif [[ ${branch} == "emu" ]]; then
+			echo "********* EMU CONFIGURATION *********"
+			./make_kernel ranchu_defconfig
+		else
+			echo "armmake error: neither master nor emu specified. bailing."
+			return
+		fi
 	fi
 	./make_kernel -j10 "$@"
 )}
