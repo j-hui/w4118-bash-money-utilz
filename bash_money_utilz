@@ -1,10 +1,8 @@
 alias git::root="git rev-parse --show-toplevel"
 
-alias emu="emulator @w4118avd -kernel $(git::root)/build-emu/kernel/arch/arm64/boot/Image -show-kernel"
-
 alias armmake="make::build"
 alias makekernel="make::build"
-alias make::img="$(git::root)/tools/make_bootimg"
+alias emu="test::emu"
 
 function git::is_w4118()
 {
@@ -38,6 +36,49 @@ function git::emu()
 	./make_kernel ranchu_defconfig
 )}
 
+function make::img()
+{
+	"$(git::root)/tools/make_bootimg"
+}
+
+function make::ranchu()
+{(
+	if ! git::is_w4118; then
+		echo "error: not in w4118 git repo"
+		return 1
+	fi
+
+	cd "$(git::root)/kernel"
+
+	echo "********* EMU CONFIGURATION *********"
+	./make_kernel ranchu_defconfig
+)}
+
+function make::msm()
+{(
+	if ! git::is_w4118; then
+		echo "error: not in w4118 git repo"
+		return 1
+	fi
+
+	cd "$(git::root)/kernel"
+
+	echo "********* MASTER CONFIGURATION *********"
+	./make_kernel msm_defconfig
+)}
+
+function make::prompt()
+{
+	echo -n "please specific the config you would like to compile with [master/emu]: "
+	read branch
+	case "${branch}" in
+		master|m)	make::msm "$@" || return ${?} ;;
+		emu|e)		make::ranchu "$@" || return ${?} ;;
+		*)		echo "armmake error: neither master nor emu specified. bailing."
+				return 1 ;;
+	esac
+}
+
 function make::build()
 {(
 	if ! git::is_w4118; then
@@ -47,32 +88,23 @@ function make::build()
 
 	cd "$(git::root)/kernel"
 
-	branch="$(git rev-parse --abbrev-ref HEAD)"
-	if [[ "${branch}" == "master" ]]
-	then
-		echo "********* MASTER CONFIGURATION *********"
-		./make_kernel msm_defconfig
-	elif [[ "${branch}" == "emu" ]]
-	then
-		echo "********* EMU CONFIGURATION *********"
-		./make_kernel ranchu_defconfig
-	else
-		echo "armmake error: not on master or emu branch"
-		echo -n "please specific the config you would like to compile with [master/emu]: "
-		read branch
-		if [[ ${branch} == "master" ]]; then
-			echo "********* MASTER CONFIGURATION *********"
-			./make_kernel msm_defconfig
-		elif [[ ${branch} == "emu" ]]; then
-			echo "********* EMU CONFIGURATION *********"
-			./make_kernel ranchu_defconfig
-		else
-			echo "armmake error: neither master nor emu specified. bailing."
-			return
-		fi
-	fi
-	./make_kernel -j10 "$@"
+	local branch="${1:-$(git rev-parse --abbrev-ref HEAD)}"
+	shift 
+	case "${branch}" in
+		master|m)	make::msm "$@" || return ${?} ;;
+		emu|e)		make::ranchu "$@" || return ${?} ;;
+		*)		make::prompt "$@" || return ${?} ;;
+	esac
+	
+
+	./make_kernel -j10 "$@" && make::img
 )}
+
+function test::emu()
+{
+	local branch="${1:-$(git rev-parse --abbrev-ref HEAD)}"
+	emulator @w4118avd -kernel $(git::root)/build-${branch}/kernel/arch/arm64/boot/Image -show-kernel
+}
 
 function style::check()
 {
